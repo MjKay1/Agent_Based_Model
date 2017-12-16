@@ -3,12 +3,34 @@
 Created on Mon Oct  9 10:17:59 2017
 
 @author: gy17mjk
+
+Creates agents and assigns xy value, moves agents and interacts with environment and each other
+
+the agents are created with xy values taken from the university of leeds website using webscraping,
+if no data is found, random interger between 0 and 99 is used.
+agents moves 1 step at a time in a random direction, 'eating' environment data and storing it 
+(environment= any DEM/ list of values, needs to be loaded prior to running code and called in.txt), if they come within the distance set up
+in neighbourhood, they will share their total store of data between each other.
+Running code will bring up GUI, where model can be run, an animation will play and stop when condition met, either num_of_iterations reached
+or max_store reached. Environment then stored (out.txt) and total.store appended to store.txt.
+
+arguments-
+
+num_of_agents -int
+num_of_interations -int
+neighbourhood -int/float
+max_store -int/float
+environment input (in.txt) -int/float
+matplotlib.pyplot.ylim- int
+matplotlib.pyplot.xlim- int
+
+returns-
+
+animation showing agents interacting with environment
+environment output (out.txt) -int/float
+total store of agents (store.txt) -float
 """
-"""
-import matplotlib
-print(matplotlib.rcParams['backend'])
-matplotlib.use('Qt4Agg')
-"""
+
 
 import matplotlib.pyplot
 import matplotlib.animation
@@ -73,9 +95,36 @@ carry_on = True
 
 
 def update(frame_number):
-
+    """
+    until stopping condition is met it moves agents, makes them eat and share with neighbours
+    and generates a frame of the animation. 
+    
+    stopping conditions are set as the num_of_iterations or if the max_store of agents is met.
+    if value is less than these defined values it will repeat. on each repeat the agents preform
+    a move funtion, an eat function and a share_with_neighbours function, the criteria for the
+    stopping codition is then checked again, and the next frame for the animation is produced 
+    (frame_number).
+    
+    arguments-
+    
+    num_of_iterations- int
+    agents -int
+    neighbourhood -float
+    store- float
+    max_store -float
+    num_of_agents -int
+    environment -int/float
+    matplotlib.pyplot.ylim- int
+    matplotlib.pyplot.xlim- int
+    
+    returns-
+    
+    store.txt- will also print "stopping condition met, total store = [VALUE]" when 
+        stopping condition met this by max_store -float 
+    frame in animation
+    """
     fig.clear()
-    global carry_on
+    global carry_on #makes animations continue until set otherwise.
     
     
 #Randomly move 'j' times and eat
@@ -107,6 +156,9 @@ def update(frame_number):
 
 #check for repeat
 def gen_function(b = [0]):
+    """
+    requires no setup
+    """
     a = 0
     global carry_on #Not actually needed as we're not assigning, but clearer
     while (a < num_of_iterations) & (carry_on) :
@@ -114,9 +166,11 @@ def gen_function(b = [0]):
         a = a + 1
         
 
-#animation = matplotlib.animation.FuncAnimation(fig, update, interval=1, 
-#                                repeat=False, frames=num_of_iterations)
+#animation = matplotlib.animation.FuncAnimation(fig, update, interval=1, repeat=False, frames=num_of_iterations)
 def run():
+    """
+    requires no setup.
+    """
     animation = matplotlib.animation.FuncAnimation(fig, update, frames=gen_function, repeat=False)
     canvas.show()
 
@@ -132,33 +186,6 @@ root.config(menu=menu_bar)
 model_menu = tkinter.Menu(menu_bar)
 menu_bar.add_cascade(label="Model", menu=model_menu)
 model_menu.add_command(label="Run model", command=run) 
-
-
-
-"""
-#plotting a graph
-matplotlib.pyplot.ylim(0, 99)
-matplotlib.pyplot.xlim(0, 99)
-for i in range(num_of_agents):
-    matplotlib.pyplot.scatter(agents[i].x,agents[i].y)
-"""
-"""
-#Assigning easterly and westerly points different colours
-#find the east most point and assign to [a]
-east=max(agents, key=operator.itemgetter(1))
-#find the west most point and assign to [b]
-west=min(agents, key=operator.itemgetter(1))
-#pull the x and y co-ordinates from the listed [a] to colour the most easterly pink
-matplotlib.pyplot.scatter(east[1],east[0],color='deeppink')
-#pull the x and y co-ordinates from the listed [b] to colour the most westerly cyan
-matplotlib.pyplot.scatter(west[1],west[0],color='cyan')
-"""
-"""
-matplotlib.pyplot.imshow(environment)
-matplotlib.pyplot.show()
-"""
-
-#print(agent.store)
 
 
 #export environment
